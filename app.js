@@ -4,7 +4,7 @@ const shopHandlers = require("./routes/shop");
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
-app.use(adminHandlers);
+app.use("/admin", adminHandlers);
 app.use(shopHandlers);
 
 app.use("/", (req, res) => {
