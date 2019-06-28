@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const adminHandlers = require("./routes/admin");
 const shopHandlers = require("./routes/shop");
 const app = express();
@@ -8,7 +9,7 @@ app.use("/admin", adminHandlers);
 app.use(shopHandlers);
 
 app.use("/", (req, res) => {
-	res.status(404).send("<h1>Page Not Found</h1>");
+    res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
 });
 
 app.listen(3000);
