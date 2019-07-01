@@ -18,15 +18,17 @@ const getProductsFromFile = cb => {
     });
 };
 module.exports = class Product {
-    constructor(title, imageUrl, description, price) {
+    constructor(title, imageUrl, description, price, id) {
         this.title = title;
         this.imageUrl = imageUrl;
         this.description = description;
         this.price = price;
+        this.id = id;
     }
 
     save() {
         getProductsFromFile(products => {
+            this.id = products.length || 0;
             products.push(this);
             fs.writeFile(p, JSON.stringify(products), err => {
                 if (err) {
@@ -36,7 +38,31 @@ module.exports = class Product {
         });
     }
 
+    edit(id, newProduct) {
+        getProductsFromFile(products => {
+            products.splice(id, 1, newProduct);
+            fs.writeFile(p, JSON.stringify(products), err => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        });
+    }
+
+    static delete(id) {
+        getProductsFromFile(products => {
+            products.splice(id, 1);
+            fs.writeFile(p, JSON.stringify(products), err => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        });
+    }
     static fetchAll(cb) {
+        getProductsFromFile(cb);
+    }
+    static fetchProduct(cb) {
         getProductsFromFile(cb);
     }
 };
