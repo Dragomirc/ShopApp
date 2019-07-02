@@ -12,9 +12,12 @@ exports.getProducts = (req, res) => {
 };
 
 exports.getIndex = (req, res) => {
-    res.render(path.join("shop", "index"), {
-        pageTitle: "Shop",
-        path: "/"
+    Product.fetchAll(products => {
+        res.render(path.join("shop", "index"), {
+            pageTitle: "Shop",
+            path: "/",
+            prods: products
+        });
     });
 };
 
