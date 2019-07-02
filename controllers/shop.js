@@ -16,7 +16,7 @@ exports.getProductDetails = (req, res) => {
         res.render(path.join("shop", "product-details"), {
             pageTitle: "Product Details",
             product,
-            path: "/product"
+            path: "/products"
         });
     });
 };
@@ -41,8 +41,8 @@ exports.getCart = (req, res) => {
 };
 
 exports.postAddToCart = (req, res) => {
-    const { id } = req.params;
-    Product.findById(id, product => {
+    const { productId } = req.body;
+    Product.findById(productId, product => {
         const { title, imageUrl, price } = product;
         const cart = new Cart(title, imageUrl, price);
         cart.addToCard();
