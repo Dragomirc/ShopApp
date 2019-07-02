@@ -46,7 +46,7 @@ exports.postAddToCart = (req, res) => {
         const { title, imageUrl, price } = product;
         const cart = new Cart(title, imageUrl, price);
         cart.addToCard();
-        res.redirect("/products");
+        res.redirect("/cart");
     });
 };
 exports.deleteCartItem = (req, res) => {
