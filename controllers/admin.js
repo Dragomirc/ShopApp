@@ -18,11 +18,11 @@ exports.getProducts = (req, res) => {
 };
 exports.getEditProduct = (req, res) => {
     const { id } = req.params;
-    Product.fetchProduct(products =>
+    Product.findById(id, product =>
         res.render(path.join("admin", "edit-product"), {
             path: "/admin/edit-prooduct",
             pageTitle: "Edit Product",
-            product: products[id]
+            product
         })
     );
 };

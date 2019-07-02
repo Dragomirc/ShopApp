@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const uuidv4 = require("uuid/v4");
 
 const p = path.join(
     path.dirname(process.mainModule.filename),
@@ -27,8 +28,8 @@ module.exports = class Product {
     }
 
     save() {
+        this.id = uuidv4();
         getProductsFromFile(products => {
-            this.id = products.length || 0;
             products.push(this);
             fs.writeFile(p, JSON.stringify(products), err => {
                 if (err) {
@@ -40,7 +41,10 @@ module.exports = class Product {
 
     edit(id, newProduct) {
         getProductsFromFile(products => {
-            products.splice(id, 1, newProduct);
+            const productIndex = products.findIndex(
+                product => product.id === id
+            );
+            products.splice(productIndex, 1, newProduct);
             fs.writeFile(p, JSON.stringify(products), err => {
                 if (err) {
                     console.log(err);
@@ -51,8 +55,9 @@ module.exports = class Product {
 
     static delete(id) {
         getProductsFromFile(products => {
-            products.splice(id, 1);
-            fs.writeFile(p, JSON.stringify(products), err => {
+            const newProducts = products.filter(product => product.id !== id);
+
+            fs.writeFile(p, JSON.stringify(newProducts), err => {
                 if (err) {
                     console.log(err);
                 }
@@ -62,7 +67,10 @@ module.exports = class Product {
     static fetchAll(cb) {
         getProductsFromFile(cb);
     }
-    static fetchProduct(cb) {
-        getProductsFromFile(cb);
+    static findById(id, cb) {
+        getProductsFromFile(products => {
+            const product = products.find(product => product.id === id);
+            cb(product);
+        });
     }
 };
