@@ -1,9 +1,11 @@
 const path = require("path");
+const uuidv4 = require("uuid/v4");
 const Product = require("../models/product");
 exports.getAddProduct = (req, res) => {
-    res.render(path.join("admin", "add-product"), {
+    res.render(path.join("admin", "edit-product"), {
         pageTitle: "Add Product",
-        path: "/admin/add-product"
+        path: "/admin/add-product",
+        editing: false
     });
 };
 
@@ -22,15 +24,15 @@ exports.getEditProduct = (req, res) => {
         res.render(path.join("admin", "edit-product"), {
             path: "/admin/edit-prooduct",
             pageTitle: "Edit Product",
-            product
+            product,
+            editing: true
         })
     );
 };
 exports.postEditProduct = (req, res) => {
-    const { id } = req.params;
-    const { title, imageUrl, description, price } = req.body;
+    const { title, imageUrl, description, price, id } = req.body;
     const newProduct = new Product(title, imageUrl, description, price, id);
-    newProduct.edit(id, newProduct);
+    newProduct.save();
     res.redirect("/admin/products");
 };
 

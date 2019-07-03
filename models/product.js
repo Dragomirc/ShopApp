@@ -28,24 +28,18 @@ module.exports = class Product {
     }
 
     save() {
-        this.id = uuidv4();
         getProductsFromFile(products => {
-            products.push(this);
-            fs.writeFile(p, JSON.stringify(products), err => {
-                if (err) {
-                    console.log(err);
-                }
-            });
-        });
-    }
-
-    edit(id, newProduct) {
-        getProductsFromFile(products => {
-            const productIndex = products.findIndex(
-                product => product.id === id
-            );
-            products.splice(productIndex, 1, newProduct);
-            fs.writeFile(p, JSON.stringify(products), err => {
+            const updatedProducts = [...products];
+            if (this.id) {
+                const existingProductIndex = products.findIndex(
+                    prod => prod.id === this.id
+                );
+                updatedProducts[existingProductIndex] = this;
+            } else {
+                this.id = uuidv4();
+                updatedProducts.push(this);
+            }
+            fs.writeFile(p, JSON.stringify(updatedProducts), err => {
                 if (err) {
                     console.log(err);
                 }

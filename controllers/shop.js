@@ -41,17 +41,13 @@ exports.getCart = (req, res) => {
 };
 
 exports.postAddToCart = (req, res) => {
-    const { productId } = req.body;
-    Product.findById(productId, product => {
-        const { title, imageUrl, price } = product;
-        const cart = new Cart(title, imageUrl, price);
-        cart.addToCard();
-        res.redirect("/cart");
-    });
+    const { productId, productPrice } = req.body;
+    Cart.addToCard(productId, productPrice);
+    res.redirect("/cart");
 };
 exports.deleteCartItem = (req, res) => {
-    const { id } = req.params;
-    Cart.delete(id);
+    const { productId, productPrice } = req.body;
+    Cart.delete(productId, productPrice);
     res.redirect("/cart");
 };
 exports.getOrders = (req, res) => {

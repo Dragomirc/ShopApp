@@ -23,8 +23,10 @@
                   <h2 class="product__price"><%= item.price %>$</h2>               
               </div>
               <div class="card__actions">
-                  <form action="/delete-cart-item/<%= item.id %>" method="POST">
-                      <button class="btn">Delete</button>
+                  <form action="/delete-cart-item" method="POST">
+                      <input type="hidden" name="productId" value="<%= item.id %>">
+                      <input type="hidden" name="productPrice" value="<%= item.price %>">
+                      <button class="btn" type="submit">Delete</button>
                   </form>
               </div>
           </article>
