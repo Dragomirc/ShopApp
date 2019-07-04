@@ -1,23 +1,7 @@
-const fs = require("fs");
-const path = require("path");
+const db = require("../utils/database");
 const uuidv4 = require("uuid/v4");
 const Product = require("./product");
-const p = path.join(
-    path.dirname(process.mainModule.filename),
-    "data",
-    "cart.json"
-);
 
-const getCartItemsFromFile = cb => {
-    let cartItems = { products: [], totalPrice: 0 };
-    fs.readFile(p, (err, fileContent) => {
-        if (!err && fileContent.length) {
-            cb(JSON.parse(fileContent));
-        } else {
-            cb(cartItems);
-        }
-    });
-};
 module.exports = class Cart {
     static addToCard(productId, productPrice) {
         getCartItemsFromFile(cart => {
@@ -42,8 +26,11 @@ module.exports = class Cart {
             });
         });
     }
-    static fetchAll(cb) {
-        getCartItemsFromFile(cb);
+    static fetchAll() {
+        return db.execute("SELECT * FROM cart");
+        return db.execute(
+            "SELECT products.id, products.description, products.title, products.price, products.imageUrl, cart.qty FROM products INNER JOIN cart ON products.id=cart.productId"
+        );
     }
     static delete(productId, productPrice) {
         getCartItemsFromFile(cart => {
