@@ -45,17 +45,26 @@ module.exports = class Cart {
     static fetchAll(cb) {
         getCartItemsFromFile(cb);
     }
-    static delete(id, productPrice) {
+    static delete(productId, productPrice) {
         getCartItemsFromFile(cart => {
-            const currentProduct = cart.products.find(
+            const updatedCart = { ...cart };
+            const product = cart.products.find(
                 product => product.id === productId
             );
-            cart.totalPrice -= Number(productPrice);
-            fs.writeFile(p, JSON.stringify(products), err => {
-                if (err) {
-                    console.log(err);
-                }
-            });
+            if (product) {
+                const productQty = product.qty;
+                updatedCart.products = updatedCart.products.filter(
+                    prod => prod.id !== productId
+                );
+                updatedCart.totalPrice =
+                    updatedCart.totalPrice - productPrice * productQty;
+
+                fs.writeFile(p, JSON.stringify(updatedCart), err => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+            }
         });
     }
 };

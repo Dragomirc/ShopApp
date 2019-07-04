@@ -5,27 +5,26 @@
 <body>
   <%- include('../includes/navigation.ejs') %>
   <main>
-    <% if(cartItems.length > 0){ %>
+    <% if(cartProducts.length > 0){ %>
       <h1>Cart</h1>
       <div class="grid">
-      <% for(let item of cartItems){ %>  
+      <% for(let item of cartProducts){ %>  
           <article class="card product-item">
               <header class="card__header">
-                  <h1 class="product__title"><%= item.title %></h1>
+                  <h1 class="product__title"><%= item.productData.title %> (<%= item.qty %>)</h1>
               </header>
               <div class="card__image">
                   <img
-                      src="<%= item.imageUrl %>"
+                      src="<%= item.productData.imageUrl %>"
                       alt="A Book"
                   />
               </div>
               <div class="card__content">
-                  <h2 class="product__price"><%= item.price %>$</h2>               
+                  <h2 class="product__price"><%= item.productData.price %>$</h2>             
               </div>
               <div class="card__actions">
                   <form action="/delete-cart-item" method="POST">
-                      <input type="hidden" name="productId" value="<%= item.id %>">
-                      <input type="hidden" name="productPrice" value="<%= item.price %>">
+                      <input type="hidden" name="productId" value="<%= item.productData.id %>">
                       <button class="btn" type="submit">Delete</button>
                   </form>
               </div>
