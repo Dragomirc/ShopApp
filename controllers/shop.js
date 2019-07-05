@@ -2,39 +2,40 @@ const path = require("path");
 const Product = require("../models/product");
 const Cart = require("../models/cart");
 exports.getProducts = (req, res) => {
-    Product.fetchAll()
-        .then(([rows]) => {
+    Product.findAll()
+        .then(prods => {
             res.render(path.join("shop", "product-list"), {
                 pageTitle: "Products",
                 path: "/products",
-                prods: rows
+                prods
             });
         })
         .catch(console.log);
 };
 exports.getProductDetails = (req, res) => {
     const { id } = req.params;
-    Product.findById(id).then(([rows]) => {
+    Product.findByPk(id).then(product => {
         res.render(path.join("shop", "product-details"), {
             pageTitle: "Product Details",
-            product: rows[0],
+            product,
             path: "/products"
         });
     });
 };
 exports.getIndex = (req, res) => {
-    Product.fetchAll()
-        .then(([rows]) => {
+    Product.findAll()
+        .then(prods => {
             res.render(path.join("shop", "index"), {
                 pageTitle: "Shop",
                 path: "/",
-                prods: rows
+                prods
             });
         })
         .catch(console.log);
 };
 
 exports.getCart = (req, res) => {
+    Cart.findAll({});
     Cart.fetchAll().then(([rows]) => {
         res.render(path.join("shop", "cart"), {
             pageTitle: "Cart",
@@ -46,6 +47,7 @@ exports.getCart = (req, res) => {
 
 exports.postAddToCart = (req, res) => {
     const { productId, productPrice } = req.body;
+
     Cart.addToCard(productId, productPrice)
         .then(() => {
             res.redirect("/cart");
