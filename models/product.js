@@ -14,7 +14,7 @@ module.exports = class Product {
         if (this.id) {
             const { title, imageUrl, description, price } = this;
             return db.execute(
-                `UPDATE products SET title = '${title}', imageUrl = '${imageUrl}', description = '${description}' WHERE id = ${
+                `UPDATE products SET title = '${title}', imageUrl = '${imageUrl}', description = '${description}', price = '${price}' WHERE id = ${
                     this.id
                 }`
             );
