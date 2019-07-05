@@ -14,14 +14,16 @@ module.exports = class Product {
         if (this.id) {
             const { title, imageUrl, description, price } = this;
             return db.execute(
-                `UPDATE products SET title = '${title}', imageUrl = '${imageUrl}', description = '${description}', price = '${price}' WHERE id = ${
+                `UPDATE products SET title = ?, imageUrl = ?, description = ?, price = ? WHERE id = ${
                     this.id
-                }`
+                }`,
+                [title, imageUrl, description, price]
             );
         } else {
             const { title, imageUrl, description, price } = this;
             return db.execute(
-                `INSERT INTO products (title, price, description, imageUrl) VALUES('${title}', '${price}','${description}','${imageUrl}')`
+                `INSERT INTO products (title, price, description, imageUrl) VALUES( ?, ?, ?, ?)`,
+                [title, price, description, imageUrl]
             );
         }
     }

@@ -8,12 +8,13 @@ module.exports = class Cart {
                 if (response[0].length) {
                     const currentCartItem = response[0][0];
                     return db.execute(
-                        `UPDATE cart SET qty = '${currentCartItem.qty +
-                            1}'  WHERE productId = ${productId}`
+                        `UPDATE cart SET qty = ?  WHERE productId = ${productId}`,
+                        [currentCartItem.qty + 1]
                     );
                 } else {
                     return db.execute(
-                        `INSERT INTO cart (productId, qty) VALUES ( '${productId}', '1')`
+                        `INSERT INTO cart (productId, qty) VALUES ( ?, '1')`,
+                        [productId]
                     );
                 }
             });

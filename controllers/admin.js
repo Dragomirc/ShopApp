@@ -2,9 +2,9 @@ const path = require("path");
 const uuidv4 = require("uuid/v4");
 const Product = require("../models/product");
 exports.getProducts = (req, res) => {
-    Product.fetchAll().then(products => {
+    Product.fetchAll().then(([rows]) => {
         res.render(path.join("admin", "products"), {
-            prods: products[0],
+            prods: rows,
             path: "/admin/products",
             pageTitle: "Admin Products"
         });
@@ -30,11 +30,11 @@ exports.postAddProduct = (req, res) => {
 
 exports.getEditProduct = (req, res) => {
     const { id } = req.params;
-    Product.findById(id).then(product =>
+    Product.findById(id).then(([rows]) =>
         res.render(path.join("admin", "edit-product"), {
             path: "/admin/edit-prooduct",
             pageTitle: "Edit Product",
-            product: product[0][0],
+            product: rows[0],
             editing: true
         })
     );
