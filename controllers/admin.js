@@ -1,7 +1,7 @@
 const path = require("path");
 const Product = require("../models/product");
 exports.getProducts = (req, res) => {
-    Product.findAll().then(prods => {
+    req.user.getProducts().then(prods => {
         res.render(path.join("admin", "products"), {
             prods,
             path: "/admin/products",
@@ -45,15 +45,14 @@ exports.getEditProduct = (req, res) => {
 };
 exports.postEditProduct = (req, res) => {
     const { title, imageUrl, description, price, id } = req.body;
-    req.user
-        .getEditProduct(
-            { title, imageUrl, description, price },
-            {
-                where: {
-                    id
-                }
+    Product.update(
+        { title, imageUrl, description, price },
+        {
+            where: {
+                id
             }
-        )
+        }
+    )
         .then(() => {
             res.redirect("/admin/products");
         })
@@ -62,11 +61,8 @@ exports.postEditProduct = (req, res) => {
 
 exports.deleteProduct = (req, res) => {
     const { id } = req.body;
-    Product.destroy({
-        where: {
-            id
-        }
-    })
+    Product.findByPk(id)
+        .then(product => product.destroy())
         .then(() => {
             res.redirect("/admin/products");
         })
