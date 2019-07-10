@@ -102,16 +102,13 @@ exports.deleteCartItem = (req, res) => {
         .catch(console.log);
 };
 exports.getOrders = (req, res) => {
-    req.user
-        .getOrders()
-        // .then(orders => orders[0].getProducts())
-        .then(orders => {
-            res.render(path.join("shop", "orders"), {
-                pageTitle: "Orders",
-                path: "/orders",
-                orders
-            });
+    req.user.getOrders({ include: ["products"] }).then(orders => {
+        res.render(path.join("shop", "orders"), {
+            pageTitle: "Orders",
+            path: "/orders",
+            orders
         });
+    });
 };
 exports.postOrder = (req, res) => {
     let fetchedCart;
