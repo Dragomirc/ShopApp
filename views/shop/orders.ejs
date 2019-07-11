@@ -9,9 +9,9 @@
                 <ul class="cart__item-list">
                     <% orders.forEach(order => { %>
                         <li>
-                            <h1># <%= order.id %></h1>
-                            <%  order.products.forEach(product => { %>
-                                <li><%= product.title %>(<%= product['order-item'].qty %>)</li>
+                            <h1># <%= order._id %></h1>
+                            <%  order.items.forEach(product => { console.log(product) %>
+                                <li><%= product.title %>(<%= product.quantity %>)</li>
                             <% });%>
                         </li>
                     <% }) %>
