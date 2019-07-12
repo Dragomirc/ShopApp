@@ -1,14 +1,17 @@
 const path = require("path");
 const Product = require("../models/product");
-const User = require("../models/user");
+
 exports.getProducts = (req, res) => {
-    Product.fetchAll().then(prods => {
-        res.render(path.join("admin", "products"), {
-            prods,
-            path: "/admin/products",
-            pageTitle: "Admin Products"
+    Product.find()
+        // .select("title price -_id")
+        // .populate("userId", "name")
+        .then(prods => {
+            res.render(path.join("admin", "products"), {
+                prods,
+                path: "/admin/products",
+                pageTitle: "Admin Products"
+            });
         });
-    });
 };
 exports.getAddProduct = (req, res) => {
     res.render(path.join("admin", "edit-product"), {
@@ -19,8 +22,14 @@ exports.getAddProduct = (req, res) => {
 };
 exports.postAddProduct = (req, res) => {
     const { title, imageUrl, description, price } = req.body;
-    const userId = req.user._id;
-    const product = new Product(title, price, description, imageUrl, userId);
+    const userId = req.user;
+    const product = new Product({
+        title,
+        price,
+        description,
+        imageUrl,
+        userId
+    });
     product
         .save()
         .then(() => {
@@ -44,17 +53,14 @@ exports.getEditProduct = (req, res) => {
 };
 exports.postEditProduct = (req, res) => {
     const { title, imageUrl, description, price, id } = req.body;
-    const userId = req.user._id;
-    const product = new Product(
-        title,
-        price,
-        description,
-        imageUrl,
-        userId,
-        id
-    );
-    product
-        .save()
+    Product.findById(id)
+        .then(product => {
+            product.title = title;
+            product.imageUrl = imageUrl;
+            product.description = description;
+            product.price = price;
+            return product.save();
+        })
         .then(prod => {
             res.redirect("/admin/products");
         })
@@ -63,9 +69,7 @@ exports.postEditProduct = (req, res) => {
 
 exports.deleteProduct = (req, res) => {
     const { id } = req.body;
-    const { user } = req;
-    Product.deleteById(id)
-        .then(() => user.deleteCartItemById(id))
+    Product.findByIdAndRemove(id)
         .then(() => {
             res.redirect("/admin/products");
         })
