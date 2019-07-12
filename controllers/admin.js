@@ -1,5 +1,6 @@
 const path = require("path");
 const Product = require("../models/product");
+const User = require("../models/user");
 exports.getProducts = (req, res) => {
     Product.fetchAll().then(prods => {
         res.render(path.join("admin", "products"), {
@@ -62,8 +63,9 @@ exports.postEditProduct = (req, res) => {
 
 exports.deleteProduct = (req, res) => {
     const { id } = req.body;
-
+    const { user } = req;
     Product.deleteById(id)
+        .then(() => user.deleteCartItemById(id))
         .then(() => {
             res.redirect("/admin/products");
         })
