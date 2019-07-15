@@ -7,7 +7,8 @@ exports.getProducts = (req, res) => {
             res.render(path.join("shop", "product-list"), {
                 pageTitle: "Products",
                 path: "/products",
-                prods
+                prods,
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(console.log);
@@ -19,18 +20,25 @@ exports.getProductDetails = (req, res) => {
             res.render(path.join("shop", "product-details"), {
                 pageTitle: "Product Details",
                 product,
-                path: "/products"
+                path: "/products",
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(console.log);
 };
 exports.getIndex = (req, res) => {
+    // const isLoggedIn = req
+    //     .get("Cookie")
+    //     .split(";")[2]
+    //     .trim()
+    //     .split("=")[1];
     Product.find()
         .then(prods => {
             res.render(path.join("shop", "index"), {
                 pageTitle: "Shop",
                 path: "/",
-                prods
+                prods,
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(console.log);
@@ -45,7 +53,8 @@ exports.getCart = (req, res) => {
             res.render(path.join("shop", "cart"), {
                 pageTitle: "Shop",
                 path: "/cart",
-                products
+                products,
+                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(console.log);
@@ -53,7 +62,7 @@ exports.getCart = (req, res) => {
 
 exports.postAddToCart = (req, res) => {
     const { productId } = req.body;
-    const user = req.user;
+    const { user } = req;
     return Product.findById(productId)
         .then(product => user.addToCart(product))
         .then(() => {
@@ -63,20 +72,21 @@ exports.postAddToCart = (req, res) => {
 };
 exports.deleteCartItem = (req, res) => {
     const { productId } = req.body;
-    req.user
-        .deleteCartItem(productId)
+    const { user } = req;
+    user.deleteCartItem(productId)
         .then(() => {
             res.redirect("/cart");
         })
         .catch(console.log);
 };
 exports.getOrders = (req, res) => {
-    const userId = req.user._id;
+    const userId = req.session.user._id;
     Order.find({ "user.userId": userId }).then(orders => {
         res.render(path.join("shop", "orders"), {
             pageTitle: "Orders",
             path: "/orders",
-            orders
+            orders,
+            isAuthenticated: req.session.isLoggedIn
         });
     });
 };

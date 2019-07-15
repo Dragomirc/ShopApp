@@ -2,39 +2,56 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 const adminHandlers = require("./routes/admin");
 const shopHandlers = require("./routes/shop");
 const errorController = require("./controllers/errors");
+const authHandlers = require("./routes/auth");
 const User = require("./models/user");
+
+const MONGODB_URI = `mongodb+srv://Dragomir:${
+    process.env.DATABASE_PASSWORD
+}@cluster0-lie0b.mongodb.net/shop?retryWrites=true&w=majority`;
 const app = express();
+const store = new MongoDBStore({
+    uri: MONGODB_URI,
+    collection: "sessions"
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+    session({
+        secret: "my secret",
+        resave: false,
+        saveUninitialized: false,
+        store
+    })
+);
 
 app.use((req, res, next) => {
-    if (!req.user) {
-        User.findById("5d2882ec5bac932fe46e6c95").then(user => {
+    if (!req.session.user) {
+        return next();
+    }
+    User.findById(req.session.user._id)
+        .then(user => {
             req.user = user;
             next();
-        });
-    } else {
-        next();
-    }
+        })
+        .catch(console.log);
 });
 app.use("/admin", adminHandlers.router);
 app.use(shopHandlers);
+app.use(authHandlers);
 
 app.use(errorController.get404);
 
 mongoose
-    .connect(
-        `mongodb+srv://Dragomir:${
-            process.env.DATABASE_PASSWORD
-        }@cluster0-lie0b.mongodb.net/shop?retryWrites=true&w=majority`
-    )
+    .connect(MONGODB_URI)
     .then(() => {
         User.findOne().then(user => {
             if (!user) {
