@@ -8,6 +8,7 @@ const adminHandlers = require("./routes/admin");
 const shopHandlers = require("./routes/shop");
 const errorController = require("./controllers/errors");
 const authHandlers = require("./routes/auth");
+
 const User = require("./models/user");
 
 const MONGODB_URI = `mongodb+srv://Dragomir:${
@@ -44,27 +45,15 @@ app.use((req, res, next) => {
         })
         .catch(console.log);
 });
+
+app.use(authHandlers);
 app.use("/admin", adminHandlers.router);
 app.use(shopHandlers);
-app.use(authHandlers);
-
 app.use(errorController.get404);
 
 mongoose
     .connect(MONGODB_URI)
     .then(() => {
-        User.findOne().then(user => {
-            if (!user) {
-                const user = new User({
-                    name: "Drago",
-                    email: "drago@drago.com",
-                    cart: {
-                        items: []
-                    }
-                });
-                user.save();
-            }
-        });
         app.listen(3000);
     })
     .catch(console.log);

@@ -2,6 +2,7 @@ const path = require("path");
 const Product = require("../models/product");
 
 exports.getProducts = (req, res) => {
+    const { isLoggedIn } = req.session;
     Product.find()
         // .select("title price -_id")
         // .populate("userId", "name")
@@ -10,16 +11,17 @@ exports.getProducts = (req, res) => {
                 prods,
                 path: "/admin/products",
                 pageTitle: "Admin Products",
-                isAuthenticated: req.session.isLoggedIn
+                isAuthenticated: isLoggedIn
             });
         });
 };
 exports.getAddProduct = (req, res) => {
+    const { isLoggedIn } = req.session;
     res.render(path.join("admin", "edit-product"), {
         pageTitle: "Add Product",
         path: "/admin/add-product",
         editing: false,
-        isAuthenticated: req.session.isLoggedIn
+        isAuthenticated: isLoggedIn
     });
 };
 exports.postAddProduct = (req, res) => {
@@ -41,6 +43,7 @@ exports.postAddProduct = (req, res) => {
 };
 
 exports.getEditProduct = (req, res) => {
+    const { isLoggedIn } = req.session;
     const { id } = req.params;
     Product.findById(id)
         .then(product => {
@@ -49,7 +52,7 @@ exports.getEditProduct = (req, res) => {
                 pageTitle: "Edit Product",
                 product,
                 editing: true,
-                isAuthenticated: req.session.isLoggedIn
+                isAuthenticated: isLoggedIn
             });
         })
         .catch(console.log);
