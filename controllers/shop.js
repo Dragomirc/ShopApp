@@ -8,7 +8,8 @@ exports.getProducts = (req, res) => {
                 pageTitle: "Products",
                 path: "/products",
                 prods,
-                isAuthenticated: req.session.isLoggedIn
+                isAuthenticated: req.session.isLoggedIn,
+                csrfToken: req.csrfToken()
             });
         })
         .catch(console.log);
@@ -38,7 +39,8 @@ exports.getIndex = (req, res) => {
                 pageTitle: "Shop",
                 path: "/",
                 prods,
-                isAuthenticated: req.session.isLoggedIn
+                isAuthenticated: req.session.isLoggedIn,
+                csrfToken: req.csrfToken()
             });
         })
         .catch(console.log);
@@ -46,7 +48,6 @@ exports.getIndex = (req, res) => {
 
 exports.getCart = (req, res) => {
     const { isLoggedIn } = req.session;
-
     const { user } = req;
     user.populate("cart.items.productId")
         .execPopulate()
@@ -99,7 +100,7 @@ exports.postOrder = (req, res) => {
         .execPopulate()
         .then(({ cart }) => {
             const newUser = {
-                name: user.name,
+                email: user.email,
                 userId: user
             };
             const products = cart.items.map(product => {

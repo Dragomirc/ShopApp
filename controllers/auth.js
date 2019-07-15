@@ -5,13 +5,11 @@ const User = require("../models/user");
 exports.getLogin = (req, res) => {
     res.render(path.join("auth", "login"), {
         pageTitle: "Login",
-        path: "/login",
-        isAuthenticated: req.isLoggedIn
+        path: "/login"
     });
 };
 exports.postLogin = (req, res) => {
     const { email, password } = req.body;
-    let tempUser;
     User.findOne({ email })
         .then(user => {
             if (!user) {
@@ -23,7 +21,7 @@ exports.postLogin = (req, res) => {
                 .then(doMatch => {
                     if (doMatch) {
                         req.session.isLoggedIn = true;
-                        req.session.user = tempUser;
+                        req.session.user = user;
                         req.session.save(err => {
                             if (err) {
                                 console.log(err);
@@ -54,8 +52,7 @@ exports.logout = (req, res) => {
 exports.getSignup = (req, res) => {
     res.render(path.join("auth", "signup"), {
         pageTitle: "Login",
-        path: "/signup",
-        isAuthenticated: req.isLoggedIn
+        path: "/signup"
     });
 };
 exports.postSignup = (req, res) => {
