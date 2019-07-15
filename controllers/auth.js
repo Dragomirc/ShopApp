@@ -28,3 +28,24 @@ exports.logout = (req, res) => {
         res.redirect("/");
     });
 };
+exports.getSignup = (req, res) => {
+    res.render(path.join("auth", "signup"), {
+        pageTitle: "Login",
+        path: "/signup",
+        isAuthenticated: req.isLoggedIn
+    });
+};
+exports.postSignup = (req, res) => {
+    User.findById("5d2882ec5bac932fe46e6c95")
+        .then(user => {
+            req.session.isLoggedIn = true;
+            req.session.user = user;
+            req.session.save(err => {
+                if (err) {
+                    console.log(err);
+                }
+                res.redirect("/");
+            });
+        })
+        .catch(console.log);
+};

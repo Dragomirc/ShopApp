@@ -8,6 +8,8 @@ body {
     padding: 0;
     margin: 0;
     font-family: "Open Sans", sans-serif;
+    position: fixed;
+    width: 100%;
 }
 
 main {
@@ -43,7 +45,7 @@ form {
 .main-header__nav {
     height: 100%;
     width: 100%;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: space-between;
 }
@@ -109,16 +111,23 @@ form {
     padding: 0;
 }
 
-.mobile-nav__item a {
+.mobile-nav__item a,
+.mobile-nav__item button {
     text-decoration: none;
     color: black;
     font-size: 1.5rem;
     padding: 0.5rem 2rem;
+    font: inherit;
+    background: transparent;
+    border: none;
+    cursor: pointer;
 }
 
 .mobile-nav__item a:active,
 .mobile-nav__item a:hover,
-.mobile-nav__item a.active {
+.mobile-nav__item a.active,
+.mobile-nav__item button:active,
+.mobile-nav__item button:hover {
     background: #00695c;
     color: white;
     border-radius: 3px;
