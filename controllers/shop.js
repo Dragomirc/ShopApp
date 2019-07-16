@@ -43,7 +43,6 @@ exports.getIndex = (req, res) => {
 };
 
 exports.getCart = (req, res) => {
-    const { isLoggedIn } = req.session;
     const { user } = req;
     user.populate("cart.items.productId")
         .execPopulate()
@@ -78,7 +77,6 @@ exports.deleteCartItem = (req, res) => {
         .catch(console.log);
 };
 exports.getOrders = (req, res) => {
-    const { isLoggedIn } = req.session;
     const userId = req.session.user._id;
     Order.find({ "user.userId": userId }).then(orders => {
         res.render(path.join("shop", "orders"), {
