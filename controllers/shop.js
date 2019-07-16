@@ -7,9 +7,7 @@ exports.getProducts = (req, res) => {
             res.render(path.join("shop", "product-list"), {
                 pageTitle: "Products",
                 path: "/products",
-                prods,
-                isAuthenticated: req.session.isLoggedIn,
-                csrfToken: req.csrfToken()
+                prods
             });
         })
         .catch(console.log);
@@ -21,8 +19,7 @@ exports.getProductDetails = (req, res) => {
             res.render(path.join("shop", "product-details"), {
                 pageTitle: "Product Details",
                 product,
-                path: "/products",
-                isAuthenticated: req.session.isLoggedIn
+                path: "/products"
             });
         })
         .catch(console.log);
@@ -39,7 +36,6 @@ exports.getIndex = (req, res) => {
                 pageTitle: "Shop",
                 path: "/",
                 prods,
-                isAuthenticated: req.session.isLoggedIn,
                 csrfToken: req.csrfToken()
             });
         })
@@ -56,8 +52,7 @@ exports.getCart = (req, res) => {
             res.render(path.join("shop", "cart"), {
                 pageTitle: "Shop",
                 path: "/cart",
-                products,
-                isAuthenticated: req.session.isLoggedIn
+                products
             });
         })
         .catch(console.log);
@@ -89,8 +84,7 @@ exports.getOrders = (req, res) => {
         res.render(path.join("shop", "orders"), {
             pageTitle: "Orders",
             path: "/orders",
-            orders,
-            isAuthenticated: req.session.isLoggedIn
+            orders
         });
     });
 };
