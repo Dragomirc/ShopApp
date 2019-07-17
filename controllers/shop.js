@@ -1,4 +1,5 @@
 const path = require("path");
+
 const Product = require("../models/product");
 const Order = require("../models/order");
 exports.getProducts = (req, res) => {
@@ -30,6 +31,7 @@ exports.getIndex = (req, res) => {
     //     .split(";")[2]
     //     .trim()
     //     .split("=")[1];
+
     Product.find()
         .then(prods => {
             res.render(path.join("shop", "index"), {

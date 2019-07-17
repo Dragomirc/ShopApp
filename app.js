@@ -20,7 +20,7 @@ const store = new MongoDBStore({
     uri: MONGODB_URI,
     collection: "sessions"
 });
-const csrFProtection = csrf();
+const csrfProtection = csrf();
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -34,7 +34,7 @@ app.use(
         store
     })
 );
-app.use(csrFProtection);
+app.use(csrfProtection);
 app.use(flash());
 app.use((req, res, next) => {
     if (!req.session.user) {
