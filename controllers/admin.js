@@ -82,14 +82,15 @@ exports.postEditProduct = (req, res) => {
         return res.status(422).render(path.join("admin", "edit-product"), {
             pageTitle: "Edit Product",
             path: "/admin/edit-product",
-            editing: false,
+            editing: true,
             errorMessage: errors.array()[0].msg,
             validationErrors: errors.array(),
             product: {
                 title,
                 imageUrl,
                 description,
-                price
+                price,
+                _id: id
             }
         });
     }
@@ -98,6 +99,7 @@ exports.postEditProduct = (req, res) => {
             if (product.userId.toString() !== req.user._id.toString()) {
                 return res.redirect("/");
             }
+            console.log(product._id);
             product.title = title;
             product.imageUrl = imageUrl;
             product.description = description;
