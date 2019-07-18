@@ -23,13 +23,6 @@ router.post(
         body("email")
             .isEmail()
             .withMessage("Please enter a valid email")
-            .custom((value, { req }) => {
-                return User.findOne({ email: value }).then(user => {
-                    if (!user) {
-                        return Promise.reject("Invalid email or password.");
-                    }
-                });
-            })
             .normalizeEmail()
     ],
     authController.postLogin

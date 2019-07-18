@@ -41,6 +41,15 @@ exports.postLogin = (req, res) => {
     }
     User.findOne({ email })
         .then(user => {
+            if (!user) {
+                return res.status(422).render(path.join("auth", "login"), {
+                    pageTitle: "Login",
+                    path: "/login",
+                    errorMessage: "Invalid email or password!",
+                    oldInput: { email, password },
+                    validationErrors: errors.array()
+                });
+            }
             const hash = user.password;
             return bcrypt
                 .compare(password, hash)
@@ -55,8 +64,15 @@ exports.postLogin = (req, res) => {
                             res.redirect("/");
                         });
                     } else {
-                        req.flash("error", "Invalid email or password.");
-                        res.redirect("/login");
+                        return res
+                            .status(422)
+                            .render(path.join("auth", "login"), {
+                                pageTitle: "Login",
+                                path: "/login",
+                                errorMessage: "Invalid email or password.",
+                                oldInput: { email, password },
+                                validationErrors: errors.array()
+                            });
                     }
                 })
                 .catch(err => {
