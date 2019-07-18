@@ -24,12 +24,30 @@ exports.getAddProduct = (req, res) => {
         pageTitle: "Add Product",
         path: "/admin/add-product",
         editing: false,
+        hasError: false,
         errorMessage: null,
         validationErrors: []
     });
 };
 exports.postAddProduct = (req, res, next) => {
-    const { title, imageUrl, description, price } = req.body;
+    const { title, description, price } = req.body;
+    const image = req.file;
+    if (!image) {
+        return res.status(422).render(path.join("admin", "edit-product"), {
+            pageTitle: "Add Product",
+            path: "/admin/add-product",
+            editing: false,
+            errorMessage:
+                "The attached image should be in either png or jpg format.",
+            hasError: true,
+            validationErrors: [],
+            product: {
+                title,
+                description,
+                price
+            }
+        });
+    }
     const userId = req.user;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -37,16 +55,17 @@ exports.postAddProduct = (req, res, next) => {
             pageTitle: "Add Product",
             path: "/admin/add-product",
             editing: false,
+            hasError: true,
             errorMessage: errors.array()[0].msg,
             validationErrors: errors.array(),
             product: {
                 title,
-                imageUrl,
                 description,
                 price
             }
         });
     }
+    const imageUrl = image.path;
     const product = new Product({
         title,
         price,
@@ -61,6 +80,7 @@ exports.postAddProduct = (req, res, next) => {
         })
         .catch(err => {
             const error = new Error(err);
+
             error.httpStatusCode = 500;
             return next(error);
         });
@@ -78,6 +98,7 @@ exports.getEditProduct = (req, res, next) => {
                 pageTitle: "Edit Product",
                 product,
                 editing: true,
+                hasError: false,
                 errorMessage: null,
                 validationErrors: []
             });
@@ -89,18 +110,19 @@ exports.getEditProduct = (req, res, next) => {
         });
 };
 exports.postEditProduct = (req, res, next) => {
-    const { title, imageUrl, description, price, id } = req.body;
+    const { title, description, price, id } = req.body;
+    const image = req.file;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).render(path.join("admin", "edit-product"), {
             pageTitle: "Edit Product",
             path: "/admin/edit-product",
             editing: true,
+            hasError: true,
             errorMessage: errors.array()[0].msg,
             validationErrors: errors.array(),
             product: {
                 title,
-                imageUrl,
                 description,
                 price,
                 _id: id
@@ -113,7 +135,9 @@ exports.postEditProduct = (req, res, next) => {
                 return res.redirect("/");
             }
             product.title = title;
-            product.imageUrl = imageUrl;
+            if (image) {
+                product.imageUrl = image.path;
+            }
             product.description = description;
             product.price = price;
             return product.save().then(prod => {

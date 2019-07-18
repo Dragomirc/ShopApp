@@ -18,10 +18,10 @@ router.post(
             .isLength({ min: 5 })
 
             .trim(),
-        body("imageUrl")
-            .trim()
-            .isURL()
-            .withMessage("Image Url should be a valid url."),
+        // body("imageUrl")
+        //     .trim()
+        //     .isURL()
+        //     .withMessage("Image Url should be a valid url."),
         body("description")
             .isLength({ min: 5 })
             .withMessage("Description should be greater than 5 characters.")
@@ -41,10 +41,10 @@ router.post(
             .isLength({ min: 5 })
             .withMessage("Title should be greater than 5 characters.")
             .trim(),
-        body("imageUrl")
-            .trim()
-            .isURL()
-            .withMessage("Image Url should be a valid url."),
+        // body("imageUrl")
+        //     .trim()
+        //     .isURL()
+        //     .withMessage("Image Url should be a valid url."),
         body("description")
             .isLength({ min: 5 })
             .withMessage("Description should be greater than 5 characters.")
