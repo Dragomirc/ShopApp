@@ -121,7 +121,11 @@ exports.postSignup = (req, res) => {
                 html: "<h1>You successfully signed up</h1>"
             });
         })
-        .catch(console.log);
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
 exports.getResetPassword = (req, res) => {
     const errorMessage = req.flash("error")[0];
@@ -162,7 +166,11 @@ exports.postResetPassword = (req, res) => {
                     `
                 });
             })
-            .catch(console.log);
+            .catch(err => {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                return next(error);
+            });
     });
 };
 
@@ -172,19 +180,25 @@ exports.getNewPassword = (req, res, next) => {
     User.findOne({
         resetToken: token,
         resetTokenExpiration: { $gt: Date.now() }
-    }).then(user => {
-        if (!user) {
-            req.flash("error", "Please request a new password reset");
-            return res.redirect("/login");
-        }
-        res.render(path.join("auth", "new-password"), {
-            pageTitle: "New password",
-            path: "/new-password",
-            errorMessage,
-            userId: user._id.toString(),
-            passwordToken: token
+    })
+        .then(user => {
+            if (!user) {
+                req.flash("error", "Please request a new password reset");
+                return res.redirect("/login");
+            }
+            res.render(path.join("auth", "new-password"), {
+                pageTitle: "New password",
+                path: "/new-password",
+                errorMessage,
+                userId: user._id.toString(),
+                passwordToken: token
+            });
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
         });
-    });
 };
 
 exports.updatePassword = (req, res) => {
@@ -210,7 +224,15 @@ exports.updatePassword = (req, res) => {
                 .then(() => {
                     res.redirect("/login");
                 })
-                .catch(console.log);
+                .catch(err => {
+                    const error = new Error(err);
+                    error.httpStatusCode = 500;
+                    return next(error);
+                });
         })
-        .catch(console.log);
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };
