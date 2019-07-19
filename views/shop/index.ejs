@@ -30,9 +30,20 @@
                         <%- include('../includes/add-to-cart.ejs',{product: product})%>
                     </div>
                 </article>
-      
+
             <% } %> 
           </div>
+          <% if(totalProducts > 0){ %>            
+          <section class="pagination">
+              <% if(hasPreviousPage){ %>
+                <a href="/?page=<%= previousPage %>" >Prev</a>
+              <% } %>
+                <a href="/?page=<%= queryPage %>" ><%= queryPage %></a>
+               <% if(hasNextPage){ %>
+                    <a href="/?page=<%= nextPage %>" >Next</a>
+               <% } %>
+           </section>
+           <% } %>
             <% }else{ %>
             <h1>No Products</h1>
             <% }%>

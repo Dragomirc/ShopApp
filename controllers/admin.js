@@ -156,11 +156,14 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.deleteProduct = (req, res, next) => {
     const { id } = req.body;
-    Product.findOne({ _id: id, userId: req.user._id })
+    Product.findById(id)
         .then(product => {
+            if (!product) {
+                return next(new Error("Product not found."));
+            }
             const imagePath = product.imageUrl;
             deleteFile(imagePath);
-            return product.remove();
+            return Product.deleteOne({ _id: id, userId: req.user._id });
         })
         .then(() => {
             res.redirect("/admin/products");
