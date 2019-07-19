@@ -3,16 +3,43 @@ const { validationResult } = require("express-validator");
 const { deleteFile } = require("../utils/file");
 const Product = require("../models/product");
 
+const ITEMS_PER_PAGE = 2;
 exports.getProducts = (req, res, next) => {
-    Product.find({ userId: req.user._id })
-        // .select("title price -_id")
-        // .populate("userId", "name")
-        .then(prods => {
-            res.render(path.join("admin", "products"), {
-                prods,
-                path: "/admin/products",
-                pageTitle: "Admin Products"
-            });
+    let page = Number(req.query.page);
+    if (!page) {
+        page = 1;
+    }
+    let totalItems = 0;
+    Product.find()
+        .countDocuments()
+        .then(numProducts => {
+            totalItems = numProducts;
+            return (
+                Product.find({ userId: req.user._id })
+                    .skip((page - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE)
+                    // .select("title price -_id")
+                    // .populate("userId", "name")
+                    .then(prods => {
+                        res.render(path.join("admin", "products"), {
+                            prods,
+                            path: "/admin/products",
+                            pageTitle: "Admin Products",
+                            totalProducts: totalItems,
+                            queryPage: page,
+                            hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+                            hasPreviousPage: page > 1,
+                            nextPage: page + 1,
+                            previousPage: page - 1,
+                            csrfToken: req.csrfToken()
+                        });
+                    })
+                    .catch(err => {
+                        const error = new Error(err);
+                        error.httpStatusCode = 500;
+                        return next(error);
+                    })
+            );
         })
         .catch(err => {
             const error = new Error(err);

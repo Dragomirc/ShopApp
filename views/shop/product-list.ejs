@@ -35,6 +35,17 @@
       
             <% } %> 
           </div>
+          <% if(totalProducts > 0){ %>            
+            <section class="pagination">
+                <% if(hasPreviousPage){ %>
+                  <a href="/?page=<%= previousPage %>" >Prev</a>
+                <% } %>
+                  <a href="/?page=<%= queryPage %>" class="active"><%= queryPage %></a>
+                 <% if(hasNextPage){ %>
+                      <a href="/?page=<%= nextPage %>" >Next</a>
+                 <% } %>
+             </section>
+             <% } %>
             <% }else{ %>
             <h1>No Products</h1>
             <% }%>
