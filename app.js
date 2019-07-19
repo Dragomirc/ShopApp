@@ -75,7 +75,8 @@ app.use((req, res, next) => {
             next();
         })
         .catch(err => {
-            next(new Error(err));
+            err.httpStatusCode = 500;
+            return next(err);
         });
 });
 
@@ -86,7 +87,8 @@ app.get("/500", errorController.get500);
 app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
-    res.status(500).render("500", {
+    console.log(error);
+    res.status(error.httpStatusCode).render("500", {
         pageTitle: "Error",
         path: "/500",
         isAuthenticated: req.session.isLoggedIn
