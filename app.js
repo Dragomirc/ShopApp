@@ -7,6 +7,8 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
+const isAuth = require("./middleware/is-auth");
+const shopController = require("./controllers/shop");
 const adminHandlers = require("./routes/admin");
 const shopHandlers = require("./routes/shop");
 const errorController = require("./controllers/errors");
@@ -55,11 +57,10 @@ app.use(
         store
     })
 );
-app.use(csrfProtection);
+
 app.use(flash());
 app.use((req, res, next) => {
     res.locals.isAuthenticated = req.session.isLoggedIn;
-    res.locals.csrfToken = req.csrfToken();
     next();
 });
 app.use((req, res, next) => {
@@ -78,6 +79,13 @@ app.use((req, res, next) => {
             err.httpStatusCode = 500;
             return next(err);
         });
+});
+
+app.post("/create-order", isAuth, shopController.postOrder);
+app.use(csrfProtection);
+app.use((req, res, next) => {
+    res.locals.csrfToken = req.csrfToken();
+    next();
 });
 
 app.use(authHandlers);

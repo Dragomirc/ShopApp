@@ -199,6 +199,7 @@ exports.getCheckout = (req, res, next) => {
 
 exports.postOrder = (req, res, next) => {
     const { user } = req;
+    let total = 0;
     user.populate("cart.items.productId")
         .execPopulate()
         .then(({ cart }) => {
@@ -206,7 +207,9 @@ exports.postOrder = (req, res, next) => {
                 email: user.email,
                 userId: user
             };
+
             const products = cart.items.map(product => {
+                total += product.quantity * product.productId.price;
                 return {
                     product: { ...product.productId._doc },
                     quantity: product.quantity
@@ -216,7 +219,17 @@ exports.postOrder = (req, res, next) => {
             const order = new Order({ user: newUser, products });
             return order.save();
         })
-        .then(() => {
+        .then(result => {
+            const stripe = require("stripe")(
+                "sk_test_teg388lmFPh8UR8Tz1zyV3UD00qI8ZcLjW"
+            );
+            const charge = stripe.charges.create({
+                amount: total,
+                currency: "usd",
+                source: "tok_visa",
+                receipt_email: user.email,
+                metadata: { order_id: SpeechRecognitionResult._id }
+            });
             return user.clearCart();
         })
         .then(() => {
