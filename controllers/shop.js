@@ -172,6 +172,31 @@ exports.getOrders = (req, res, next) => {
             return next(error);
         });
 };
+
+exports.getCheckout = (req, res, next) => {
+    const { user } = req;
+    user.populate("cart.items.productId")
+        .execPopulate()
+        .then(user => {
+            const products = user.cart.items;
+            let totalSum = 0;
+            products.forEach(product => {
+                totalSum += product.quantity * product.productId.price;
+            });
+            res.render(path.join("shop", "checkout"), {
+                pageTitle: "Checkout",
+                path: "/checkout",
+                products,
+                totalSum
+            });
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+};
+
 exports.postOrder = (req, res, next) => {
     const { user } = req;
     user.populate("cart.items.productId")

@@ -1,8 +1,40 @@
 <%- include('../includes/head.ejs') %>
-<body>
-  <%- include('../includes/navigation.ejs') %>
-  <main>
-      <h1>Checkout</h1>
-  </main>
-  <%- include('../includes/end.ejs') %>
+<link rel="stylesheet" href="/css/cart.css">
+<link rel="stylesheet" href="/css/stripe.css">
+    </head>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main>
+            <% if (products.length > 0) { %>
+              <ul class="cart__item-list">
+                  <% products.forEach(p => { %>
+                      <li class="cart__item">
+                          <h1><%= p.productId.title %></h1>
+                          <h2>Quantity: <%= p.quantity %></h2>
+                      </li>
+                  <% }) %>
+              </ul>
+              <div class="centered">
+                  <h2>Total: $<%= totalSum %></h2>
+                  <script src="https://js.stripe.com/v3/"></script>
+  
+              <form action="/create-order" method="POST" id="payment-form">
+                <div class="form-row">
+                  <label for="card-element">
+                    Credit or debit card
+                  </label>
+                  <div id="card-element">
+                    <!-- A Stripe Element will be inserted here. -->
+                  </div>
 
+                  <!-- Used to display form errors. -->
+                  <div id="card-errors" role="alert"></div>
+                </div>
+
+                <button class="btn">Submit Payment</button>
+              </form>
+              </div>          
+            <% } %>
+        </main>
+        <script src="/js/stripe.js"></script>
+        <%- include('../includes/end.ejs') %>
