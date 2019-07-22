@@ -31,9 +31,8 @@
                                     <form action="/admin/delete-product" method="POST">
                                         <input type="hidden"  name="_csrf" value="<%= csrfToken %>">
                                         <input type="hidden" name="id" value="<%= product._id %>">
-                                        <button class="btn" type="submit">Delete</button>
+                                        <button class="btn" id="delete-product" type="button" onclick="deleteProduct(this)">Delete</button>
                                     </form>
-
                                 </div>
                             </article>
                             <% } %>
@@ -44,3 +43,5 @@
                         <% } %>
             </main>
             <%- include('../includes/end.ejs') %>
+            <script src="/js/admin.js"></script>
+            <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
