@@ -224,11 +224,11 @@ exports.postOrder = (req, res, next) => {
                 "sk_test_teg388lmFPh8UR8Tz1zyV3UD00qI8ZcLjW"
             );
             const charge = stripe.charges.create({
-                amount: total,
+                amount: total * 100,
                 currency: "usd",
                 source: "tok_visa",
                 receipt_email: user.email,
-                metadata: { order_id: SpeechRecognitionResult._id }
+                metadata: { order_id: result._id.toString() }
             });
             return user.clearCart();
         })
