@@ -5,7 +5,7 @@ const Product = require("../models/product");
 
 const ITEMS_PER_PAGE = 2;
 exports.getProducts = (req, res, next) => {
-    let page = Number(req.query.page);
+    let page = +req.query.page || 1;
     if (!page) {
         page = 1;
     }
@@ -31,6 +31,8 @@ exports.getProducts = (req, res, next) => {
                             hasPreviousPage: page > 1,
                             nextPage: page + 1,
                             previousPage: page - 1,
+                            lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+                            currentPage: page,
                             csrfToken: req.csrfToken()
                         });
                     })

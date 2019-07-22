@@ -29,6 +29,8 @@ exports.getProducts = (req, res, next) => {
                         hasPreviousPage: page > 1,
                         nextPage: page + 1,
                         previousPage: page - 1,
+                        currentPage: page,
+                        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
                         csrfToken: req.csrfToken()
                     });
                 })
@@ -89,6 +91,8 @@ exports.getIndex = (req, res, next) => {
                         hasPreviousPage: page > 1,
                         nextPage: page + 1,
                         previousPage: page - 1,
+                        currentPage: page,
+                        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
                         csrfToken: req.csrfToken()
                     });
                 })
